@@ -4,13 +4,16 @@ namespace app\controller\wap;
 
 use app\BaseController;
 use \think\facade\Config;
+use mulo\facade\Http;
+use app\wap\model\UserModel;
+use think\facade\Log;
 
 class Wechat extends BaseController
 {
 
     protected $config;
     
-    
+
     // 初始化
     protected function initialize()
     {
@@ -113,6 +116,5 @@ class Wechat extends BaseController
             'auth_token'=>$authToken
         ]);
     }
-
 }
 

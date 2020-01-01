@@ -23,9 +23,9 @@ return [
             // 服务器地址
             'hostname'          => env('database.hostname', '129.28.206.237'),
             // 数据库名
-            'database'          => env('database.database', 'root'),
+            'database'          => env('database.database', 'tp6'),
             // 用户名
-            'username'          => env('database.username', 'xiaopaopao'),
+            'username'          => env('database.username', 'tianbo'),
             // 密码
             'password'          => env('database.password', 'wusuowei54345'),
             // 端口
