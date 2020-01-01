@@ -3,9 +3,30 @@
 namespace app\controller\wap;
 
 use app\BaseController;
+use \think\facade\Config;
 
 class Wechat extends BaseController
 {
+
+    protected $config;
+    
+    
+    // 初始化
+    protected function initialize()
+    {
+        $this->config = Config::get('app');
+    }
+
+
+    /**
+     * 定义授权链接
+     * 
+     */
+    protected  function getAuthUrl($callback)
+    {
+        $callback = urlencode($callback);
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid={$this->config['appid']}&redirect_uri={$callback}&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+    }
 
 
     /**
@@ -15,12 +36,9 @@ class Wechat extends BaseController
     function toAuth()
     {
         $callback = input('callback', "http://wap.xiaopaopao.cn");
-        $callback = urlencode($callback);
 
-        $callback = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0c57b89185360c3b&redirect_uri={$callback}&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
-        
         return result(0, [
-            'url' => $callback
+            'url' => $this->getAuthUrl($callback)
         ]);
     }
 
@@ -32,7 +50,68 @@ class Wechat extends BaseController
 
     function auth()
     {
-       
+        # 读取code 
+        $code = $this->request->param('code');
+        if (!$code) {
+            return result(1, 'code is mast');
+        }
+
+        # 第二步：通过code换取网页授权access_token
+        $action = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$this->config['appid']}&secret={$this->config['appsecret']}&code={$code}&grant_type=authorization_code";
+        $res = Http::httpRequest($action);
+        $res = json_decode($res, true);
+        
+        if (@$res['errcode'])
+            return result(233, 'get access error', ['wechatResult' => $res]);
+
+        list($access_token, $expires_in, $refresh_token, $openid, $scope) = [
+            $res['access_token'],
+            $res['expires_in'],
+            $res['refresh_token'],
+            $res['openid'],
+            $res['scope'],
+        ];
+
+        $user = UserModel::where('wechat_openid',$openid)->find();
+        if(!$user){
+            //创建并返回用户
+            UserModel::insert([
+                'wechat_openid'=>$openid,
+            ]);
+            $user = UserModel::where('wechat_openid',$openid)->find();
+        }
+        
+
+        # 第四步：拉取用户信息(需scope为 snsapi_userinfo)
+        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$access_token}&openid={$openid}&lang=zh_CN";
+        $res = Http::httpRequest($url);
+        $res = json_decode($res, true);
+        if (@$res['errcode']){
+            Log::write("获取用户信息失败 {$openid}".json_encode($res,JSON_UNESCAPED_UNICODE),'error');
+        }else{
+            $saveDatas = [
+                'headimgurl'=>$res['headimgurl'],
+                'nickname'=>$res['nickname'],
+                'sex'=>$res['sex'],
+                'country'=>$res['country'],
+                'city'=>$res['city'],
+                'province'=>$res['province'],
+            ];
+            UserModel::where('id',$user['id'])->update($saveDatas);
+            foreach($saveDatas as $key=>$li){
+                $user[$key] = $li;
+            }
+        }
+        # 保存登录认证令牌
+        $authToken = md5($openid.microtime().rand(10000,99999));
+        UserModel::where('id',$user['id'])->update([
+            'auth_token'=>$authToken
+        ]);
+        return result(0,[
+            'user'=>$user,
+            'openid'=>$openid,
+            'auth_token'=>$authToken
+        ]);
     }
 
 }
