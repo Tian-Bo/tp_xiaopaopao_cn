@@ -10,18 +10,24 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
-Route::group('merchant', function () {
-    Route::get('login', 'merchant.User/login')
-        ->validate(\app\validate\User::class, 'edit');
-    Route::poster('register', 'merchant.User/register');
-    Route::get('info', 'merchant.User/info');
-    Route::get('wechat', 'merchant.Wechat/toAuth');
-});
-
 
 Route::group('wap', function () {
-    Route::poster('login', 'wap.User/login')
-        ->validate(\app\validate\User::class, 'edit');
-    Route::poster('register', 'wap.User/register');
-    Route::get('info', 'wap.User/info');
+
+    Route::group('user', function () {
+        Route::get('login', 'wap.User/login');
+        Route::get('register', 'wap.User/register');
+        Route::get('info', 'wap.User/info');
+    });
+
+    Route::group('order', function () {
+        Route::get('getOrder', 'wap.User/login')
+            ->validate(\app\validate\User::class, 'edit');
+    });
+
+    Route::group('wechat', function () {
+        Route::get('toAuth', 'wap.Wechat/toAuth');
+        Route::get('auth', 'wap.Wechat/auth');
+    });
+
 });
+

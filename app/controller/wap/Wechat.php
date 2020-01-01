@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controller\merchant;
+namespace app\controller\wap;
 
 use app\BaseController;
 
@@ -12,7 +12,7 @@ class Wechat extends BaseController
      * 获取微信授权需要跳转的链接
      * 
      */
-    public function toAuth()
+    function toAuth()
     {
         $callback = input('callback', "http://wap.xiaopaopao.cn");
         $callback = urlencode($callback);
@@ -22,6 +22,17 @@ class Wechat extends BaseController
         return result(0, [
             'url' => $callback
         ]);
+    }
+
+
+    /**
+     * 授权获取用户信息
+     * 
+     */
+
+    function auth()
+    {
+       
     }
 
 }

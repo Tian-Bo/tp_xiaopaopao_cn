@@ -31,4 +31,9 @@ return [
     'error_message'    => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'   => true,
+
+    // tb-微信测试号appid
+    'appid'            => 'wx0c57b89185360c3b',
+    // tb-微信测试号appsecret
+    'appsecret'        => '47e2852f4d9a2c7a65def5edc6a4b6ff',
 ];
