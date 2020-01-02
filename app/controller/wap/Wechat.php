@@ -4,7 +4,7 @@ namespace app\controller\wap;
 
 use app\BaseController;
 use \think\facade\Config;
-use app\wap\model\UserModel;
+use app\model\UserModel;
 use think\facade\Log;
 
 class Wechat extends BaseController
@@ -72,15 +72,15 @@ class Wechat extends BaseController
             $res['openid'],
             $res['scope'],
         ];
-
-        // $user = UserModel::where('wechat_openid',$openid)->find();
-        // if(!$user){
-        //     //创建并返回用户
-        //     UserModel::insert([
-        //         'wechat_openid'=>$openid,
-        //     ]);
-        //     $user = UserModel::where('wechat_openid',$openid)->find();
-        // }
+        
+        $user = UserModel::where('openid', $openid)->find();
+        if(!$user){
+            //创建并返回用户
+            UserModel::insert([
+                'openid'=>$openid,
+            ]);
+            $user = UserModel::where('openid',$openid)->find();
+        }
         
 
         # 第四步：拉取用户信息(需scope为 snsapi_userinfo)
@@ -98,16 +98,16 @@ class Wechat extends BaseController
                 'city'=>$res['city'],
                 'province'=>$res['province'],
             ];
-            // UserModel::where('id',$user['id'])->update($saveDatas);
+            UserModel::where('id',$user['id'])->update($saveDatas);
             foreach($saveDatas as $key=>$li){
                 $user[$key] = $li;
             }
         }
         # 保存登录认证令牌
         $authToken = md5($openid.microtime().rand(10000,99999));
-        // UserModel::where('id',$user['id'])->update([
-        //     'auth_token'=>$authToken
-        // ]);
+        UserModel::where('id',$user['id'])->update([
+            'auth_token'=>$authToken
+        ]);
         return result(0,[
             'user'=>$user,
             'openid'=>$openid,

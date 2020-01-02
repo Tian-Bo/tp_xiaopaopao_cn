@@ -2,11 +2,13 @@
 namespace app\model;
 
 use think\Model;
-use think\facade\Db;
 
 class UserModel extends Model
 {
-
     protected $table = 'users';
 
+    // public function tbquery() 
+    // {
+    //     $user = $this->where('id', 1)->find();
+    // }
 }
