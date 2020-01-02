@@ -59,9 +59,8 @@ class Wechat extends BaseController
 
         # 第二步：通过code换取网页授权access_token
         $action = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$this->config['appid']}&secret={$this->config['appsecret']}&code={$code}&grant_type=authorization_code";
-        $res = file_get_contents($action);
+        $res = httpRequest($action);
         return $res;
-        // $res = Http::httpRequest($action);
         // $res = json_decode($res, true);
         
         // if (@$res['errcode'])
