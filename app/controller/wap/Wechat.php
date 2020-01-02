@@ -61,18 +61,18 @@ class Wechat extends BaseController
         $action = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$this->config['appid']}&secret={$this->config['appsecret']}&code={$code}&grant_type=authorization_code";
         $res = httpRequest($action);
         return $res;
-        // $res = json_decode($res, true);
+        $res = json_decode($res, true);
         
-        // if (@$res['errcode'])
-        //     return result(233, 'get access error', ['wechatResult' => $res]);
+        if (@$res['errcode'])
+            return result(233, 'get access error', ['wechatResult' => $res]);
 
-        // list($access_token, $expires_in, $refresh_token, $openid, $scope) = [
-        //     $res['access_token'],
-        //     $res['expires_in'],
-        //     $res['refresh_token'],
-        //     $res['openid'],
-        //     $res['scope'],
-        // ];
+        list($access_token, $expires_in, $refresh_token, $openid, $scope) = [
+            $res['access_token'],
+            $res['expires_in'],
+            $res['refresh_token'],
+            $res['openid'],
+            $res['scope'],
+        ];
 
         // $user = UserModel::where('wechat_openid',$openid)->find();
         // if(!$user){
@@ -84,36 +84,36 @@ class Wechat extends BaseController
         // }
         
 
-        // # 第四步：拉取用户信息(需scope为 snsapi_userinfo)
-        // $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$access_token}&openid={$openid}&lang=zh_CN";
-        // $res = Http::httpRequest($url);
-        // $res = json_decode($res, true);
-        // if (@$res['errcode']){
-        //     Log::write("获取用户信息失败 {$openid}".json_encode($res,JSON_UNESCAPED_UNICODE),'error');
-        // }else{
-        //     $saveDatas = [
-        //         'headimgurl'=>$res['headimgurl'],
-        //         'nickname'=>$res['nickname'],
-        //         'sex'=>$res['sex'],
-        //         'country'=>$res['country'],
-        //         'city'=>$res['city'],
-        //         'province'=>$res['province'],
-        //     ];
-        //     UserModel::where('id',$user['id'])->update($saveDatas);
-        //     foreach($saveDatas as $key=>$li){
-        //         $user[$key] = $li;
-        //     }
-        // }
-        // # 保存登录认证令牌
-        // $authToken = md5($openid.microtime().rand(10000,99999));
+        # 第四步：拉取用户信息(需scope为 snsapi_userinfo)
+        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$access_token}&openid={$openid}&lang=zh_CN";
+        $res = httpRequest($url);
+        $res = json_decode($res, true);
+        if (@$res['errcode']){
+            // Log::write("获取用户信息失败 {$openid}".json_encode($res,JSON_UNESCAPED_UNICODE),'error');
+        }else{
+            $saveDatas = [
+                'headimgurl'=>$res['headimgurl'],
+                'nickname'=>$res['nickname'],
+                'sex'=>$res['sex'],
+                'country'=>$res['country'],
+                'city'=>$res['city'],
+                'province'=>$res['province'],
+            ];
+            // UserModel::where('id',$user['id'])->update($saveDatas);
+            foreach($saveDatas as $key=>$li){
+                $user[$key] = $li;
+            }
+        }
+        # 保存登录认证令牌
+        $authToken = md5($openid.microtime().rand(10000,99999));
         // UserModel::where('id',$user['id'])->update([
         //     'auth_token'=>$authToken
         // ]);
-        // return result(0,[
-        //     'user'=>$user,
-        //     'openid'=>$openid,
-        //     'auth_token'=>$authToken
-        // ]);
+        return result(0,[
+            'user'=>$user,
+            'openid'=>$openid,
+            'auth_token'=>$authToken
+        ]);
     }
 }
 
