@@ -29,5 +29,9 @@ Route::group('wap', function () {
         Route::get('auth', 'wap.Wechat/auth');
     });
 
-});
+})
+->header('Access-Control-Allow-Origin', '*')
+->header('Access-Control-Allow-Headers', 'access-token, content-type')
+->header('Access-Control-Expose-Headers', 'access-token, content-type')
+->allowCrossDomain();
 

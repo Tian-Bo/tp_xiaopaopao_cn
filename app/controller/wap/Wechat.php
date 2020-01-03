@@ -88,7 +88,7 @@ class Wechat extends BaseController
         $res = httpRequest($url);
         $res = json_decode($res, true);
         if (@$res['errcode']){
-            // Log::write("获取用户信息失败 {$openid}".json_encode($res,JSON_UNESCAPED_UNICODE),'error');
+            Log::write("获取用户信息失败 {$openid}".json_encode($res,JSON_UNESCAPED_UNICODE),'error');
         }else{
             $saveDatas = [
                 'headimgurl'=>$res['headimgurl'],
