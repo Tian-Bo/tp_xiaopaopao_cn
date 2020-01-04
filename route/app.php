@@ -33,7 +33,7 @@ Route::group('wap', function () {
 ->allowCrossDomain([
     'Access-Control-Allow-Origin' => '*',
     'Access-Control-Allow-Methods' => '*',
-    'Access-Control-Allow-Credentials' => 'false',
-    'Access-Control-Allow-Headers' => 'Authorization, Content-Type, x-token, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With',
+    'Access-Control-Allow-Headers' => '*',
+    'Access-Control-Allow-Credentials' => 'true',
 ]);
 
