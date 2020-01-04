@@ -11,7 +11,16 @@ class User extends BaseController
      */
     public function login()
     {
-        return 'login';
+        $code = $this->request->param('code');
+        if ($code == '') {
+            return result(778, [
+                'url' => '失败'
+            ]);
+        }
+
+        return result(778, [
+            'url' => '成功'
+        ]);
     }
 
     /**
