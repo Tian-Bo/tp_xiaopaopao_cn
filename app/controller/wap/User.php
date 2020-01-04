@@ -11,7 +11,7 @@ class User extends BaseController
      */
     public function login()
     {
-        $token = $this->request->param('x-token');
+        $token = $this->request->header('x-token');
         if ($token == '') {
             return result(778, [
                 'url' => '失败'
@@ -19,7 +19,7 @@ class User extends BaseController
         }
 
         return result(0, [
-            'url' => '成功'
+            'url' => '成功===>' + $token
         ]);
     }
 
