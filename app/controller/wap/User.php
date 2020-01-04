@@ -18,7 +18,7 @@ class User extends BaseController
             ]);
         }
 
-        return result(778, [
+        return result(0, [
             'url' => '成功'
         ]);
     }
