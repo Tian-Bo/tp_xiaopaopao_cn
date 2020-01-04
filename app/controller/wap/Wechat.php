@@ -26,7 +26,8 @@ class Wechat extends BaseController
     protected  function getAuthUrl($callback)
     {
         $callback = urlencode($callback);
-        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid={$this->config['appid']}&redirect_uri={$callback}&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+        $state = rand(1000000,9999999);
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid={$this->config['appid']}&redirect_uri={$callback}&response_type=code&scope=snsapi_userinfo&state={$state}#wechat_redirect";
     }
 
 
@@ -63,7 +64,7 @@ class Wechat extends BaseController
         $res = json_decode($res, true);
         
         if (@$res['errcode'])
-            return result(233, 'get access error', ['wechatResult' => $res]);
+            return result(1, 'get access error', ['wechatResult' => $res]);
 
         list($access_token, $expires_in, $refresh_token, $openid, $scope) = [
             $res['access_token'],
