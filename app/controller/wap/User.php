@@ -19,7 +19,7 @@ class User extends BaseController
         }
 
         return result(0, [
-            'url' => '成功===>' + $token
+            'url' => "成功===>{$token}"
         ]);
     }
 
