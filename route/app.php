@@ -33,6 +33,7 @@ Route::group('wap', function () {
 ->header('Access-Control-Allow-Origin', '*')    
 ->header('Access-Control-Allow-Methods', '*')
 ->header('Access-Control-Allow-Headers', '*')
+->header('x-token', '*')
 ->header('Access-Control-Allow-Credentials', 'false')
 ->allowCrossDomain();
 
