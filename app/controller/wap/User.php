@@ -11,8 +11,8 @@ class User extends BaseController
      */
     public function login()
     {
-        $code = $this->request->param('code');
-        if ($code == '') {
+        $token = $this->request->param('x-token');
+        if ($token == '') {
             return result(778, [
                 'url' => '失败'
             ]);
